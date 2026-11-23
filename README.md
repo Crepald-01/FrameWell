@@ -4,9 +4,22 @@ Framewell is a local video editor with a layered timeline, motion keyframes, Typ
 
 [Watch the 10-second launch video](./Framewell%20Launch.mp4) or open the [editable motion source](./examples/launch/Launch.tsx).
 
-## Start on Windows
+## Install and run on Windows
 
-Use Node.js 24.10 or later and put FFmpeg and ffprobe on your PATH. For a fresh checkout, install the dependencies and build the editor.
+### 1. Install Node.js and FFmpeg
+
+Framewell needs Node.js 24.10 or later and FFmpeg with `ffprobe`. In PowerShell, run the command for each prerequisite you still need.
+
+```powershell
+winget install --id OpenJS.NodeJS.LTS --exact
+winget install --id Gyan.FFmpeg --exact
+```
+
+Open a new PowerShell window after installing them.
+
+### 2. Set up Framewell once
+
+On GitHub, select **Code → Download ZIP** and extract it. Open PowerShell in the extracted folder containing `package.json` and run these three commands.
 
 ```powershell
 npm.cmd ci
@@ -14,9 +27,17 @@ npm.cmd run setup:renderer
 npm.cmd run build
 ```
 
-Run `npm.cmd start` from the Framewell folder. The service prints `http://127.0.0.1:4785`. Open that address manually when you want to edit. Port 4786 hosts the isolated code runtime. Both ports bind to the loopback address.
+### 3. Launch the editor
 
-On Windows, Framewell stores projects, copied media, and finished exports in `%LOCALAPPDATA%\Framewell`. Set `FRAMEWELL_DATA_DIR` to an absolute path to use a different folder. Set `FRAMEWELL_FFMPEG` and `FRAMEWELL_FFPROBE` if you need to specify executable paths.
+Run this from the Framewell folder each time you want to open the editor.
+
+```powershell
+npm.cmd start
+```
+
+When PowerShell says **Framewell is ready**, open [http://127.0.0.1:4785](http://127.0.0.1:4785) in your browser. Keep PowerShell open while you edit. Press **Ctrl+C** there to stop Framewell.
+
+To use AI editing, see [Connect an AI client](#connect-an-ai-client).
 
 ## Edit a composition
 
@@ -48,3 +69,9 @@ args = ['C:\path\to\framewell\server\mcp.mjs']
 Keep the Framewell service running while you use the tools. Start with `list_projects` and `get_project`. Use `apply_edits` to commit a named batch with the current revision. If the project changes before the batch commits, read the latest revision and adjust the edit. Use the same `requestId` when retrying an identical batch after a connection error.
 
 `inspect_frame` returns a composition frame to the AI client. `import_media` accepts filenames from the Framewell `inbox` folder. `run_layer_script` inserts generated layers, and `start_export`, `get_export`, and `cancel_export` control MP4 export jobs. Changes made by the MCP client appear in the editor and are recorded in project history.
+
+## Local files and settings
+
+On Windows, Framewell stores projects, copied media, and finished exports in `%LOCALAPPDATA%\Framewell`. Set `FRAMEWELL_DATA_DIR` to an absolute path to use a different folder. Set `FRAMEWELL_FFMPEG` and `FRAMEWELL_FFPROBE` if you need to specify executable paths.
+
+The editor uses port 4785. Port 4786 hosts the isolated code runtime. Both ports bind to the loopback address.
